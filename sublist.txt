@@ -57,6 +57,5 @@
 /share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/905147_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/905147_Yi/genu_corpus_callosum/gcc_tract.trk.gz
 /share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/943862_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/943862_Christa/genu_corpus_callosum/gcc_tract.trk.gz
 /share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/943862_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/943862_Yufei/genu_corpus_callosum/gcc_tract.trk.gz
-/share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/971160_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/971160_Christa/genu_corpus_callosum/gcc_tract.trk.gz
 /share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/971160_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/971160_ChristaRoza/genu_corpus_callosum/gcc_tract.trk.gz
 /share4/bayrakrg/tractEM/postprocessing/fib_files/HCP/971160_gqi_fo.nii, /share4/bayrakrg/tractEM/postprocessing/M-tracts/HCP/971160_Eugene/genu_corpus_callosum/gcc_tract.trk.gz

@@ -1,1 +1,1 @@
-from .imgloader_CT_3D import pytorch_loader
+from .imgloader_3D import pytorch_loader

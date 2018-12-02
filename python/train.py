@@ -1,8 +1,10 @@
 import torch
-import subjectlist as subl
+import python.subjectlist as subl
+from python.file_parse import parse_file
 import os
 import argparse
-import deep_tracing.torchsrc as torchsrc
+import torchsrc as torchsrc
+import random
 
 
 def mkdir(path):
@@ -20,8 +22,6 @@ def print_network(net):
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=100, help='number of epochs to train for, default=10')
 parser.add_argument('--lr', type=float, default=0.0001, help='learning rate, default=0.0001')
-parser.add_argument('--finetune',type=bool,default=False,help='fine tuning using true')
-parser.add_argument('--fineepoch', type=int, default=5, help='fine tuning starting epoch')
 
 
 opt = parser.parse_args()
@@ -33,55 +33,23 @@ batch_size = 1
 lmk_num = 2
 learning_rate = opt.lr  #0.0001
 
-finetune = opt.finetune
-fineepoch = opt.fineepoch
+data_list = '/home/hansencb/Dropbox/VandyFall2018/deep_medical_imaging/deep_tracing/sublist.txt'
+out = './'
 
-
-# define paths
-train_list_file = '/home-local/bayrakrg/MDL/deep_tracing/sublist.txt'
-val_list_file = '/home-local/bayrakrg/MDL/deep_tracing/sublist.txt'
-working_dir = os.path.join('/home-local/bayrakrg/MDL/Ass3_Segmentation/v3D/SLANTbrainSeg-master/Results')
-test_img_dir = '/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Testing/img'
-finetune_img_dir = '/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/img'
-finetune_seg_dir = '/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/label'
-
-
-# make img list
-
-if finetune == True:
-	out = os.path.join(working_dir, 'finetune_out')
-	mkdir(out)
-	train_img_files = subl.get_sub_list(finetune_img_dir)
-	train_seg_files = subl.get_sub_list(finetune_seg_dir)
-	train_dict = {}
-	train_dict['img_files'] = train_img_files
-	train_dict['seg_files'] = train_seg_files
-
-else:
-	out = os.path.join(working_dir, 'latest')
-	mkdir(out)
-	train_img_files, train_seg_files = subl.get_sub_from_txt(train_list_file)
-	train_dict = {}
-	train_dict['img_files'] = train_img_files
-	train_dict['seg_files'] = train_seg_files
-
-	val_img, val_seg = subl.get_sub_from_txt(val_list_file)
-	val_dict = {}
-	val_dict['img_files'] = val_img
-	val_dict['seg_files'] = val_seg
-
-
-test_img = subl.get_sub_list(test_img_dir)
+train_dict = parse_file(data_list)
+keys = list(train_dict.keys())
 test_dict = {}
-test_dict['img_files'] = test_img
 
+for i in range(5):
+	idx = random.randint(0, len(keys)-1)
+	test_dict[keys[idx]] = train_dict[keys[idx]]
+	del train_dict[keys[idx]]
 
 
 # load image
 train_set = torchsrc.imgloaders.pytorch_loader(train_dict, num_labels=lmk_num)
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size,shuffle=True,num_workers=1)
-# val_set = torchsrc.imgloaders.pytorch_loader(val_dict, num_labels=lmk_num)
-# val_loader = torch.utils.data.DataLoader(val_set,batch_size=batch_size,shuffle=False,num_workers=1)
+
 test_set = torchsrc.imgloaders.pytorch_loader(test_dict,num_labels=lmk_num)
 test_loader = torch.utils.data.DataLoader(test_set,batch_size=batch_size,shuffle=False,num_workers=1)
 
@@ -114,8 +82,6 @@ trainer = torchsrc.Trainer(
 	max_epoch = epoch_num,
 	batch_size = batch_size,
 	lmk_num = lmk_num,
-	finetune = finetune,
-	fineepoch = fineepoch
 )
 
 

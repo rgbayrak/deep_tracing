@@ -16,22 +16,15 @@ output_z = 88
 
 labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] # to be changed
 class pytorch_loader(data.Dataset):
-    def __init__(self, subdict, num_labels):
-        self.subdict = subdict
-        # self.img_subs = subdict['img_subs']
-        self.img_files = subdict['img_files']
-        if 'seg_subs' in subdict:
-            # self.seg_subs = subdict['seg_subs']
-            self.seg_files = subdict['seg_files']
-        else:
-            self.seg_subs = None
-            self.seg_files = None
+    def __init__(self, dict, num_labels):
+        self.dict = dict
+        self.keys = list(dict.keys())
         self.num_labels = num_labels
 
     def __getitem__(self, index):
         num_labels = self.num_labels
-        # sub_name = self.img_subs[index]
-        img_file = self.img_files[index]
+        img_file = self.dict[self.keys[index]]
+        sub_name = self.keys[index].split('/')[-3]
         img_3d = nib.load(img_file)
         img = img_3d.get_data()
 
@@ -47,7 +40,7 @@ class pytorch_loader(data.Dataset):
             y = x
         else:
             y = np.zeros((num_labels, output_z, output_x, output_y))
-            seg_file = self.seg_files[index]
+            seg_file = self.keys[index]
             seg_3d = nib.load(seg_file)
             seg = seg_3d.get_data()
 
@@ -65,4 +58,4 @@ class pytorch_loader(data.Dataset):
         return x, y, sub_name
 
     def __len__(self):
-        return len(self.img_subs)
+        return len(self.keys)
