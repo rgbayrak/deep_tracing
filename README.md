@@ -1,2 +1,2 @@
 ## DEEP TRACING
-Estimating fiber tracts using ofiber orientation information.
+Estimating fiber tracts using fiber orientation information.
