@@ -1,3 +1,0 @@
-one,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/img/img0001.nii.gz,one,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/label/label0001.nii.gz
-eleven,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/img/img0021.nii.gz,eleven,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/label/label0021.nii.gz
-twenty1,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/img/img0031.nii.gz,twenty1,/home-local/bayrakrg/MDL/Ass3_Segmentation/assignment3/Training/label/label0031.nii.gz
