@@ -1,1 +1,2 @@
-# deep_tracing
+## DEEP TRACING
+Estimating fiber tracts using ofiber orientation information.
