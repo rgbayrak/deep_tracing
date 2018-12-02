@@ -1,2 +1,2 @@
 ## DEEP TRACING
-Estimating fiber tracts using fiber orientation information.
+Estimating fiber tracts with deep learning using fiber orientation information.
