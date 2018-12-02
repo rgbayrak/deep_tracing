@@ -33,7 +33,7 @@ batch_size = 1
 lmk_num = 2
 learning_rate = opt.lr  #0.0001
 
-data_list = '/home/hansencb/Dropbox/VandyFall2018/deep_medical_imaging/deep_tracing/sublist.txt'
+data_list = '/home-local/bayrakrg/MDL/deep_tracing/sublist.txt'
 out = './'
 
 train_dict = parse_file(data_list)
