@@ -13,16 +13,14 @@ def get_sub_list(train_img_dir):
 def get_sub_from_txt(train_txt):
     fp = open(train_txt, 'r')
     sublines = fp.readlines()
-    train_img_subs  = []
-    train_img_files = []
-    train_seg_subs  = []
-    train_seg_files = []
+    train_img = []
+    train_seg = []
 
     for subline in sublines:
         sub_info = subline.replace('\n', '').split(',')
-        train_img_subs.append(sub_info[0])
-        train_img_files.append(sub_info[1])
-        train_seg_subs.append(sub_info[2])
-        train_seg_files.append(sub_info[3])
+        train_img.append(sub_info[0])
+        train_seg.append(sub_info[1])
+        # train_seg_subs.append(sub_info[2])
+        # train_seg_files.append(sub_info[3])
     fp.close()
-    return train_img_subs,train_img_files,train_seg_subs,train_seg_files
+    return train_img, train_seg

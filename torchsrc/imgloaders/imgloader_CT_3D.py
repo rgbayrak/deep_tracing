@@ -14,14 +14,14 @@ output_y = 96
 output_z = 88
 
 
-labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] # to be changed
 class pytorch_loader(data.Dataset):
     def __init__(self, subdict, num_labels):
         self.subdict = subdict
-        self.img_subs = subdict['img_subs']
+        # self.img_subs = subdict['img_subs']
         self.img_files = subdict['img_files']
         if 'seg_subs' in subdict:
-            self.seg_subs = subdict['seg_subs']
+            # self.seg_subs = subdict['seg_subs']
             self.seg_files = subdict['seg_files']
         else:
             self.seg_subs = None
@@ -30,7 +30,7 @@ class pytorch_loader(data.Dataset):
 
     def __getitem__(self, index):
         num_labels = self.num_labels
-        sub_name = self.img_subs[index]
+        # sub_name = self.img_subs[index]
         img_file = self.img_files[index]
         img_3d = nib.load(img_file)
         img = img_3d.get_data()
