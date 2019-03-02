@@ -1,8 +1,9 @@
 ## DEEP TRACING
 Estimating 
+* regions
+* fiber tracts 
 
-<l>regions
-<l>fiber tracts 
-<l>
-</l>
-    with deep learning using fiber orientation information.
+Captioning
+* false positive tracts
+
+with deep learning using fiber orientation information.
