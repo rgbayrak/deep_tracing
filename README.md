@@ -1,9 +1,9 @@
 ## DEEP TRACING
-Estimating 
+Estimating:
 * regions
 * fiber tracts 
 
-Captioning
+Captioning:
 * false positive tracts
 
-with deep learning using fiber orientation information.
+via deep learning from rgb image.
