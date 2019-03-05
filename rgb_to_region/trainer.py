@@ -25,7 +25,7 @@ def main():
     model_file = '/share4/bayrakrg/tractEM/postprocessing/deep_tracing/' + 'epoch_{}'
 
     in_channel = 3
-    n_classes = 3
+    n_classes = 4
     model = UNet3D(in_channel, n_classes).to(device)
     lr = 0.0001
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)

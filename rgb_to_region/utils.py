@@ -41,9 +41,22 @@ def train(model, device, train_loader, optimizer):
         optimizer.zero_grad()
 
         output = model(data)
-
         target = target.to(device)
-        loss = dice_loss_3d(output, target)
+
+        # # Dice Loss
+        # criterion = DICELoss().to(device)
+        # loss = criterion(output, target)
+
+        # Cross Entropy Loss
+        criterion = torch.nn.CrossEntropyLoss().to(device)
+        loss = criterion(output, torch.argmax(target, dim=1))
+
+        # # Dice Loss for each segmentation
+        # criterion = DICELoss().to(device)
+        # seed_loss = criterion(output[:, 0, :, :, :], target[:, 0, :, :, :])
+        # roi_loss = criterion(output[:, 1, :, :, :], target[:, 1, :, :, :])
+        # roa_loss = criterion(output[:, 2, :, :, :], target[:, 2, :, :, :])
+        # loss = (4*seed_loss + 4*roi_loss + roa_loss)/9
 
         train_loss += loss.item()
         loss.backward()
@@ -60,59 +73,39 @@ def train(model, device, train_loader, optimizer):
     return train_loss
 
 
-def val(model, device, train_loader, optimizer):
-    model.eval()
+# def val(model, device, train_loader, optimizer):
+#     model.eval()
+#
+#     val_loss = 0
+#     for batch_idx, sample in enumerate(train_loader):
+#         data = sample['input']
+#         target = sample['target']
+#
+#         data = data.to(device)
+#         optimizer.zero_grad()
+#
+#         output = model(data)
+#
+#         target = target.to(device)
+#         criterion = torch.nn.CrossEntropyLoss().to(device)
+#         loss = criterion(output, target)
+#
+#         val_loss += loss.item()
+#
+#     val_loss /= len(train_loader.dataset) / train_loader.batch_size
+#     print('\tValidation set: Average loss: {:.4f}'.format(val_loss), end='')
+#     return val_loss
 
-    val_loss = 0
-    for batch_idx, sample in enumerate(train_loader):
-        data = sample['input']
-        target = sample['target']
 
-        data = data.to(device)
-        optimizer.zero_grad()
+class DICELoss(torch.nn.Module):
+    def __init__(self):
+        super(DICELoss, self).__init__()
 
-        output = model(data)
+    def forward(self, target, input):
+        smooth = 1.
 
-        target = target.to(device)
-        loss = dice_loss_3d(output, target)
+        iflat = input.contiguous().view(-1)
+        tflat = target.contiguous().view(-1)
+        intersection = (iflat * tflat).sum()
 
-        val_loss += loss.item()
-
-    val_loss /= len(train_loader.dataset) / train_loader.batch_size
-    print('\tValidation set: Average loss: {:.4f}'.format(val_loss), end='')
-    return val_loss
-
-
-def dice_loss_3d(input, target):
-    """
-    input is a torch variable of size BatchxnclassesxHxWxD representing probabilities for each class
-    target is a 1-hot representation of the ground truth, should have same size as the input
-    """
-    assert input.size() == target.size(), "Input sizes must be equal."
-    assert input.dim() == 5, "Input must be a 5D Tensor."
-    # uniques = np.unique(target.numpy())
-    # assert set(list(uniques)) <= set([0, 1]), "target must only contain zeros and ones"
-    target = target.view(target.size(0), target.size(1), target.size(2), -1)
-    input = input.view(input.size(0), input.size(1), input.size(2), -1)
-    probs = F.softmax(input, dim=1)
-
-    num = probs * target  # b,c,h,w--p*g
-    num = torch.sum(num, dim=3)
-    num = torch.sum(num, dim=2)
-    num = torch.sum(num, dim=0)  # b,c
-
-    den1 = probs * probs  # --p^2
-    den1 = torch.sum(den1, dim=3)
-    den1 = torch.sum(den1, dim=2)
-    den1 = torch.sum(den1, dim=0)
-
-    den2 = target * target  # --g^2
-    den2 = torch.sum(den2, dim=3)
-    den2 = torch.sum(den2, dim=2)
-    den2 = torch.sum(den2, dim=0)
-
-    dice = 2 * (num / (den1 + den2 + 0.0000001))
-    dice_eso = dice[0:]  # we ignore background dice val, and take the foreground
-    dice_total = -1 * torch.sum(dice_eso) / dice_eso.size(0)  # divide by batch_sz
-
-    return 1 + dice_total
+        return 2 - ((2. * intersection + smooth) / (iflat.sum() + tflat.sum() + smooth))

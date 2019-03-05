@@ -158,18 +158,27 @@ class dataset(Dataset):
 
         if len(self.data[n]['roas']) > 0 and len(self.data[n]['seeds']) > 0: # make sure there is at least one seed one ROA
             # load all the labels into one volume as onehot
-            target_img = np.zeros([input_img.shape[0], input_img.shape[1], input_img.shape[2], 3]) # xyz of the image and 3 channels for the labels w/o background
+            target_img = np.zeros([input_img.shape[0], input_img.shape[1], input_img.shape[2], 4]) # xyz of the image and 3 channels for the labels w/o background
+
+            # background
+            target_img[:, :, :, 0] = np.ones([input_img.shape[0], input_img.shape[1], input_img.shape[2]])
+
+            # seed
             for f in range(len(self.data[n]['seeds'])):
                 seed = nib.load(self.data[n]['seeds'][f]).get_fdata()
-                target_img[:, :, :, 0] = np.add(seed, target_img[:, :, :, 0])
+                target_img[:, :, :, 1] = np.add(seed, target_img[:, :, :, 1])
+                target_img[:, :, :, 0] = target_img[:, :, :, 0] - target_img[:, :, :, 1]
 
+            # roi
             for u in range(len(self.data[n]['rois'])):
                 roi = nib.load(self.data[n]['rois'][u]).get_fdata()
-                target_img[:, :, :, 1] = np.add(roi, target_img[:, :, :, 1])
+                target_img[:, :, :, 2] = np.add(roi, target_img[:, :, :, 2])
+                target_img[:, :, :, 0] = target_img[:, :, :, 0] - target_img[:, :, :, 2]
 
+            # roa
             roa = nib.load(self.data[n]['roas'][0]).get_fdata()
-            target_img[:, :, :, 2] = roa
-
+            target_img[:, :, :, 3] = roa
+            target_img[:, :, :, 0] = target_img[:, :, :, 0] - target_img[:, :, :, 3]
 
             return input_img, target_img, input_file[0]
         else:
@@ -182,6 +191,9 @@ class dataset(Dataset):
         input, target, input_file = self.load_image(idx)
         input = (input - input.min()) / (input.max() - input.min())
 
+        # swap color axis because
+        # numpy image: H x W x C
+        # torch image: C X H X W
         input = input.transpose((3, 0, 1, 2)) # xyz channel --> channel xzy
         target = target.transpose((3, 0, 1, 2))
 
