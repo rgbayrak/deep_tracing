@@ -1,14 +1,12 @@
 from __future__ import print_function, division
-import torch.nn as nn
-import torch
 
-import torch.nn.functional as F
+
 import warnings
 warnings.filterwarnings("ignore")
 
-
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class UNet3D(nn.Module):
     def __init__(self, in_channel, n_classes):
