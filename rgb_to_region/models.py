@@ -1,12 +1,11 @@
 from __future__ import print_function, division
 
 
-import warnings
-warnings.filterwarnings("ignore")
+# import warnings
+# warnings.filterwarnings("ignore")
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class UNet3D(nn.Module):
     def __init__(self, in_channel, n_classes):
@@ -39,11 +38,12 @@ class UNet3D(nn.Module):
         self.dc0 = self.decoder(64, n_classes, kernel_size=1, stride=1, padding=0, bias=False)
 
     def encoder(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1,
-                bias=True, batchnorm=False):
+                bias=True, batchnorm=True):
         if batchnorm:
             layer = nn.Sequential(
                 nn.Conv3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias),
                 nn.BatchNorm3d(out_channels),
+                # batchnorm after the non-linearity, and before the dropout.
                 nn.ReLU())
         else:
             layer = nn.Sequential(
